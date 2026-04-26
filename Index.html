@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Weaves</title>
+    
+    <link rel="icon" href="https://i.ibb.co/B5KSCBdP/Chat-GPT-Image-Apr-26-2026-04-02-43-PM.png">
+
+    <!-- Premium Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Scripts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'warm-fog': '#DDD3C9',
+                        'berry-good': '#ECC4C3',
+                        'blossom': '#B97D7B',
+                        'meadow': '#928E5E',
+                        'soldier': '#575527',
+                        'illustration': '#C9BEB4'
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['"Outfit"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #DDD3C9; font-family: 'Outfit', sans-serif; overflow-x: hidden; color: #575527; }
+        .serif { font-family: 'Playfair Display', serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        
+        /* Welcome Hero Image (ONLY for Welcome page) */
+        .welcome-hero {
+            background-image: linear-gradient(to bottom, rgba(221, 211, 201, 0.5), rgba(221, 211, 201, 1)), url('input_file_0.jpeg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Hollow Weave Background Decorations */
+        .bg-weave {
+            position: fixed;
+            z-index: -1;
+            color: #C9BEB4;
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        /* Premium Transitions */
+        .fade-up { animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .drawer-slide { animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+        .quick-view-overlay {
+            background: rgba(87, 85, 39, 0.1);
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+<body>
+    <!-- BACKGROUND DECORATIONS -->
+    <div class="bg-weave top-20 left-10 rotate-12">
+        <svg width="250" height="250" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.3"><circle cx="12" cy="12" r="10"/><path d="M12 2v20M2 12h20M7.75 4.25l8.5 15.5M4.25 16.25l15.5-8.5"/></svg>
+    </div>
+    <div class="bg-weave bottom-20 right-10 -rotate-12">
+        <svg width="300" height="300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/><path d="M12 6a6 6 0 1 0 6 6 6 6 0 0 0-6-6zm0 10a4 4 0 1 1 4-4 4 4 0 0 1-4 4z"/></svg>
+    </div>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- 102 INDIVIDUAL PRODUCTS (MODIFIABLE) ---
+        const PRODUCTS = [
+            // --- TOYS (16) ---
+            { id: 1, category: 'Toys', name: 'Atlas the bunny plushie', price: 249, image: 'https://i.pinimg.com/736x/3a/41/34/3a41340a43afaaffd98daf97c2639217.jpg', desc: 'Soft and safe for little hands.' },
+            { id: 2, category: 'Toys', name: 'Cat Loaf (Set of 8)', price: 899, image: 'https://i.pinimg.com/736x/b2/fa/93/b2fa93213fabb5fd127bf1ba8f339f87.jpg', desc: 'Soft and cute companions.' },
+            { id: 3, category: 'Toys', name: 'Stacy the cow plushie', price: 249, image: 'https://i.pinimg.com/736x/aa/a0/3d/aaa03d3fbe8d79541c8acb4fb0accda1.jpg', desc: 'Rural buddy.' },
+            { id: 4, category: 'Toys', name: 'Summer chicks (Set of 6)', price: 799, image: 'https://i.pinimg.com/1200x/71/7f/31/717f31b101e1e0f1c14f2fc7c2badfbd.jpg', desc: 'Your perfect baby friends.' },
+            { id: 5, category: 'Toys', name: 'Light & Night Fury', price: 399, image: 'https://i.pinimg.com/736x/75/25/9e/75259ec4aa833caa123829c56d2be02f.jpg', desc: 'How to train your dragon fury plushie.' },
+            { id: 6, category: 'Toys', name: 'Gwen & Miles Plushies', price: 399, image: 'https://i.pinimg.com/736x/be/ae/f3/beaef31ad70f373a6c655ea54d85a326.jpg', desc: 'Spidey couple in the multiverse.' },
+            { id: 7, category: 'Toys', name: 'We Bare Bears Collection', price: 599, image: 'https://i.pinimg.com/736x/f4/3a/b1/f43ab1fb462ca19629fed57a96c0817b.jpg', desc: 'Panda, Polar and Grizzy, out at it again.' },
+            { id: 8, category: 'Toys', name: 'Solar System Planets (Set of 9)', price: 799, image: 'https://i.pinimg.com/1200x/82/9c/e8/829ce838a9fa8f6197c9dde112ea2fd7.jpg', desc: 'Bring the magic of the cosmos to your hands with our crocheted planets!' },
+            { id: 9, category: 'Toys', name: 'Sleepy baby bear', price: 249, image: 'https://i.pinimg.com/736x/f5/9d/8a/f59d8a9f54f41cfafac85339cd41970b.jpg', desc: 'The perfect sleeping companion.' },
+            { id: 10, category: 'Toys', name: 'Capybara Collection (Set of 7)', price: 699, image: 'https://i.pinimg.com/1200x/24/48/ab/2448ab33b76c5c93152df8fc710ffdef.jpg', desc: 'Adorable soft buddies.' },
+            { id: 11, category: 'Toys', name: 'Naruto Collection (Set of 15)', price: 1299, image: 'https://i.pinimg.com/1200x/0d/52/e8/0d52e85f8ff701aa81561f4c5139af80.jpg', desc: 'Look no more with our huge naruto plushie collection.' },
+            { id: 12, category: 'Toys', name: 'Demon Slayer Collection (Set of 4)', price: 699, image: 'https://i.pinimg.com/1200x/c7/da/ec/c7daec961230f07d5c7a3f789db8f0bf.jpg', desc: 'Get ready for an adventure with our demon slayer collection.' },
+            { id: 13, category: 'Toys', name: 'One Piece Collection (Set of 7)', price: 899, image: 'https://i.pinimg.com/736x/48/e8/bd/48e8bd49d38cd2271460d0357e14d94d.jpg', desc: 'Find the one piece with your plushie pals.' },
+            { id: 14, category: 'Toys', name: 'Dragon Ball Decoration', price: 699, image: 'https://i.pinimg.com/736x/d6/0d/58/d60d58f6e7682bbb7b1ce677bad46f2d.jpg', desc: 'Dragon ball decoration.' },
+            { id: 15, category: 'Toys', name: 'Spongebob Collection', price: 1399, image: 'https://i.pinimg.com/1200x/c8/47/bc/c847bca5c162c63f702822089ff53366.jpg', desc: 'Enjoy your time with Bikini Atoll residents.' },
+            { id: 16, category: 'Toys', name: 'Minion Plushie', price: 249, image: 'https://i.pinimg.com/1200x/bb/af/88/bbaf88b07b0afe4df3ce2b05ad8b3d06.jpg', desc: 'Banana!!!.' },
+
+            // --- ACCESSORIES (9) ---
+            { id: 17, category: 'Accessories', name: 'Bow Keychain', price: 39  , image: 'https://i.pinimg.com/736x/28/77/0b/28770b0681e341941174af2a90f1d2b6.jpg', desc: 'Formality and Cuteness in 1.' },
+            { id: 18, category: 'Accessories', name: 'Pink and White keychain Collection (Set of 12)', price: 219, image: 'https://i.pinimg.com/1200x/9d/4f/6a/9d4f6a5a987676c41e09fe21896fdc8a.jpg', desc: 'A collection that can be shared among friends as a gift.' },
+            { id: 19, category: 'Accessories', name: 'Hello Kitty Keychain', price: 59, image: 'https://i.pinimg.com/236x/8e/1c/96/8e1c96a5b115eb744d983765f5d0dbe7.jpg', desc: 'Woven key charm.' },
+            { id: 20, category: 'Accessories', name: 'Avocado Keychain', price: 59, image: 'https://i.pinimg.com/1200x/6b/98/39/6b98399665d616320fd049e2fe0e18aa.jpg', desc: 'Kawaii Food Crochet.' },
+            { id: 21, category: 'Accessories', name: 'Judy Hopps & Nick Keychains', price: 100, image: 'https://i.pinimg.com/1200x/20/dd/51/20dd51e006c692794ccd444e9cc2a573.jpg', desc: 'Our favorite residents of zootopia.' },
+            { id: 22, category: 'Accessories', name: 'Fury Keychains', price: 119, image: 'https://i.pinimg.com/1200x/1a/25/45/1a254514cb19a2150e2ec8ac8d4682bf.jpg', desc: 'Night & Light fury couples keychain.' },
+            { id: 23, category: 'Accessories', name: 'Jellyfish Keychain', price: 79, image: 'https://i.pinimg.com/736x/4d/2b/3e/4d2b3e9474c54e1aa857d1f144ad90fb.jpg', desc: 'These ones dont sting, I think...' },
+            { id: 24, category: 'Accessories', name: 'Ghost Keychains', price: 119, image: 'https://i.pinimg.com/736x/3d/9b/69/3d9b690dee9b64618dd71f3ba8e92207.jpg', desc: 'Spooky couples keychain.' },
+            { id: 25, category: 'Accessories', name: 'Bouqet Crochet', price: 49, image: 'https://i.pinimg.com/1200x/a5/7d/55/a57d557d6b0fcc9627e54c83e8bdecca.jpg', desc: 'Mini Flower Bouqet.' },
+
+            // --- SCARVES (4) ---
+            { id: 26, category: 'Scarves', name: 'Red Scarf (Mikasa Scarf)', price: 249, image: 'https://i.pinimg.com/736x/04/51/12/045112c94f4b73b8a0565f9fa1c43c56.jpg', desc: 'Perfect gift for a loved one.' },
+            { id: 27, category: 'Scarves', name: 'Colorful Scarf', price: 149, image: 'https://i.pinimg.com/736x/b0/b2/ec/b0b2ecf86233aa3d8751cf687732bd6b.jpg', desc: 'Staying warm and vibrant.' },
+            { id: 28, category: 'Scarves', name: 'Mossy & Beige Scraf', price: 299, image: 'https://i.pinimg.com/736x/14/b9/c5/14b9c5aad44bd7f31f1374af5454cb19.jpg', desc: 'Checkered Scarf for cold and cool times.' },
+            { id: 29, category: 'Scarves', name: 'Ocean Blend', price: 279, image: 'https://i.pinimg.com/1200x/c0/c4/61/c0c461f601e2309334fb6fe1cadcc2a1.jpg', desc: 'For the coldest nights.' },
+
+            // --- CARDIGANS (9) ---
+            { id: 30, category: 'Cardigans', name: 'Mossy & Beige Cardigan', price: 499, image: 'https://media-photos.depop.com/b1/38467810/1519198423_917b483115dc4dd4a1103d9168349f43/P0.jpg', desc: 'Thick and wrm.' },
+            { id: 31, category: 'Cardigans', name: 'Van "Yarn" gogh ' , price: 599, image: 'https://i.pinimg.com/736x/f4/28/f0/f428f0473bba1ebaf8b0bf015d7d4e7b.jpg', desc: 'Celestial Look.' },
+            { id: 32, category: 'Cardigans', name: 'Bohemian Cardigan', price: 449, image: 'https://i.pinimg.com/1200x/fb/0f/04/fb0f04f5b0cb7da4a00faffcb3017b4b.jpg', desc: 'Granny Square CrochyetCardigan.' },
+            { id: 33, category: 'Cardigans', name: 'Sage Cardigan', price: 249, image: 'https://i.pinimg.com/736x/2c/af/f9/2caff9003590df6900453022743a4e57.jpg', desc: 'Button down classic.' },
+            { id: 34, category: 'Cardigans', name: 'Umulus Cardigan', price: 299, image: 'https://i.pinimg.com/736x/3e/48/6e/3e486eceab759e572a05225c3f81a7bc.jpg', desc: 'Baggy and cozy.' },
+            { id: 35, category: 'Cardigans', name: 'Daisy Top', price: 319, image: 'https://i.pinimg.com/1200x/5f/4c/8e/5f4c8e83823292f89995f74d9afe9d32.jpg', desc: 'Winter button style.' },
+            { id: 36, category: 'Cardigans', name: 'Fall tree cardigan', price: 349, image: 'https://i.pinimg.com/1200x/35/f4/5a/35f45a65fd603b3db49e8e9bb6759460.jpg', desc: 'Rich brown and white wool.' },
+            { id: 37, category: 'Cardigans', name: 'Warm during Valentines', price: 399, image: 'https://i.pinimg.com/736x/d6/60/f6/d660f6762d1436d81868c3cdf5c418f7.jpg', desc: 'Great warm and cozy valentine gift.' },
+            { id: 38, category: 'Cardigans', name: 'Spring Lightweight', price: 450, image: 'https://i.pinimg.com/1200x/38/90/7e/38907eecadb10381972ce0d9d5a60b0c.jpg', desc: 'Multi-color pattern.' },
+
+            // --- SWEATERS (21) ---
+            { id: 39, category: 'Sweaters', name: 'Black & Red Spider Sweater', price: 219, image: 'https://i.pinimg.com/1200x/73/5d/be/735dbe26d0b3d795d5034ba7f97abd30.jpg', desc: 'Miles morales gotta get warmed up in the winter.' },
+            { id: 40, category: 'Sweaters', name: 'Hexagon Pattern', price: 319, image: 'https://i.pinimg.com/736x/ba/a0/72/baa07284d2c8fa04ec2892a82f5e8af8.jpg', desc: 'Neutral fog tones.' },
+            { id: 41, category: 'Sweaters', name: 'Two Tone Drop Shoulder Jumper', price: 210, image: 'https://i.pinimg.com/1200x/c0/03/4c/c0034c55f8a4ff6a81435001d0c0ebdc.jpg', desc: 'Grey and Black Pattern.' },
+            { id: 42, category: 'Sweaters', name: 'Diagram Pattern', price: 179, image: 'https://i.pinimg.com/736x/78/9a/3e/789a3ed4e9c85b05aa777fc45746e573.jpg', desc: 'Baggy Sleeves for big hugs.' },
+            { id: 43, category: 'Sweaters', name: 'Pink Blaze Sweater', price: 149, image: 'https://i.pinimg.com/736x/a7/30/03/a730032e0efab3d1f8fe4b16cf3eea62.jpg', desc: 'Pink flames.' },
+            { id: 44, category: 'Sweaters', name: 'Open flower Crochet', price: 149, image: 'https://i.pinimg.com/1200x/a0/a9/83/a0a98366dbdf902304ca41acc6cf6ad2.jpg', desc: 'Super fluffy wool.' },
+            { id: 45, category: 'Sweaters', name: 'Crop Sweater', price: 169, image: 'https://i.pinimg.com/1200x/5e/6f/03/5e6f03214c33eb3c0437b906a61a73d6.jpg', desc: 'Short fashion cut.' },
+            { id: 46, category: 'Sweaters', name: 'Netted Sweater', price: 279, image: 'https://i.pinimg.com/736x/18/c2/1a/18c21a778cbb9df5ad1e3b31f6a12204.jpg', desc: 'crochet halter crop top features a leaf stitch design.' },
+            { id: 47, category: 'Sweaters', name: 'Dopamine Pullover Sweater', price: 199, image: 'https://i.pinimg.com/736x/46/ad/22/46ad220cd92d78147d0904ed717f30f4.jpg', desc: 'blue and white chunky cable-knit womens sweater. .' },
+            { id: 48, category: 'Sweaters', name: 'Amelia style Sweater', price: 369, image: 'https://i.pinimg.com/736x/d9/62/af/d962aff3a5dfed479cf1312b05102c9a.jpg', desc: 'Bookshelf cardigan pattern.' },
+            { id: 49, category: 'Sweaters', name: 'Waffle Texture', price: 149, image: 'https://i.pinimg.com/736x/1e/4c/5c/1e4c5ced6864d7e937f4b925634b2c89.jpg', desc: 'Womens casual knit sweaters.' },
+            { id: 50, category: 'Sweaters', name: 'Sweater vest', price: 179, image: 'https://i.pinimg.com/736x/33/be/8a/33be8a24b238fd3544e14dc32ac63861.jpg', desc: 'Checkered knit sweater, stylish and cozy.' },
+            { id: 51, category: 'Sweaters', name: 'Coffee & Cream Sweater', price: 189, image: 'https://i.pinimg.com/1200x/1d/82/9c/1d829c3bab6ed37c6d438ea71e98b9f7.jpg', desc: ' Cosmic Crochet Pattern.' },
+            { id: 52, category: 'Sweaters', name: 'Mint Green Crochet', price: 219, image: 'https://i.pinimg.com/736x/81/98/4a/81984a2bfcdad5a37034e69bbb2d8e5e.jpg', desc: 'Striped, semi-sheer, boat neck cropped sweater.' },
+            { id: 53, category: 'Sweaters', name: 'GURUNVANI Style Sweater', price: 239, image: 'https://i.pinimg.com/1200x/04/0b/8e/040b8ea7f4bad7961f4a7d06833784dd.jpg', desc: 'Mens patchwork colorblock crewneck sweater with cable-knit detailing.' },
+            { id: 54, category: 'Sweaters', name: 'Nautical Waves', price: 219, image: 'https://i.pinimg.com/736x/55/53/71/5553719bbb3a2052bc0798c5142195d0.jpg', desc: 'Womens wavy striped, semi-sheer knit pullover sweater.' },
+            { id: 55, category: 'Sweaters', name: 'Crop sweater', price: 215, image: 'https://i.pinimg.com/1200x/65/93/d6/6593d6fac8e7b28051a05b7a308dd42f.jpg', desc: 'Striped crochet crop sweater with long sleeves and an open, airy mesh texture.' },
+            { id: 56, category: 'Sweaters', name: 'Crochet Sweater', price: 249, image: 'https://i.pinimg.com/236x/8a/7b/62/8a7b6284ccf1fd65e9bfff1e05e77b7b.jpg', desc: 'Chunky striped pattern.' },
+            { id: 57, category: 'Sweaters', name: 'Drop Shoulder Sweater', price: 230, image: 'https://i.pinimg.com/736x/81/85/a9/8185a9b02f20af478307cc0d734d8e07.jpg', desc: 'Dazy-Less Cable Knit Design.' },
+            { id: 58, category: 'Sweaters', name: 'Turtleneck Sweater', price: 279, image: 'https://i.pinimg.com/736x/8e/75/6f/8e756f463e576d56029d1fdb129f9946.jpg', desc: 'Lantern sleeves and a ribbed knit design.' },
+            { id: 59, category: 'Sweaters', name: 'Crop Sweater', price: 259, image: 'https://i.pinimg.com/1200x/b6/cb/4d/b6cb4d4683b114232a0b13952b9edbdd.jpg', desc: 'Round neck, hollow-out knit design, and a fairycore aesthetic.' },
+
+            // --- DRESSES (6) ---
+            { id: 60, category: 'Dresses', name: 'Maxi Dress ', price: 290, image: 'https://i.pinimg.com/1200x/bd/59/ac/bd59ace59d85ba7024170e2ea4aac162.jpg', desc: 'Multi-color striped crochet maxi dress.' },
+            { id: 61, category: 'Dresses', name: 'Monochrome Dress', price: 315, image: 'https://i.pinimg.com/1200x/4d/99/7e/4d997ebd263b35471e185f9aba6f2fdb.jpg', desc: 'Monochrome granny square pattern.' },
+            { id: 62, category: 'Dresses', name: 'Strap Sleeveless Dress', price: 299, image: 'https://i.pinimg.com/1200x/e4/8d/cb/e48dcb8176f22100c23f1575704ea3bc.jpg', desc: 'The Ideal Summer Vacation Dress.' },
+            { id: 63, category: 'Dresses', name: 'Mermaid Skirt', price: 279, image: 'https://i.pinimg.com/736x/4e/0d/08/4e0d08c06047567042aa91761cb233de.jpg', desc: 'Floor-length crochet skirt with a mermaid silhouette and layered ruffles at the hem.' },
+            { id: 64, category: 'Dresses', name: 'Bonvoyette crochet', price: 349, image: 'https://i.pinimg.com/1200x/48/40/a7/4840a75de0c1cbafbef8204b5b5d2a21.jpg', desc: 'Beach coverup dress, vibing the whole summer.' },
+            { id: 65, category: 'Dresses', name: 'Crochet mini dress', price: 259, image: 'https://i.pinimg.com/1200x/b5/81/df/b581df0cc027ab8efa82972e9d0f7c2c.jpg', desc: ' rust-orange floral crochet mini dress with body-hugging construction and 3D floral appliqués.' },
+
+            // --- HATS (18) ---
+            { id: 66, category: 'Hats', name: 'Winter Crochet Hat', price: 150, image: 'https://i.pinimg.com/736x/ef/12/f4/ef12f43dd429018e29ea1c4747af20c0.jpg', desc: 'These are handmade chunky rib crochet beanies, crafted from a wool and imported alpaca blend. .' },
+            { id: 67, category: 'Hats', name: 'Crochet Sun Hat', price: 439, image: 'https://i.pinimg.com/736x/6c/d3/ea/6cd3ea2854bc0beac6ef25ab8a626f97.jpg', desc: 'Relaxed fit.' },
+            { id: 68, category: 'Hats', name: 'Bucket Hat', price: 350, image: 'https://i.pinimg.com/736x/ab/ce/a7/abcea7cbf6d1dafb7c50788338be8085.jpg', desc: 'Trendy black crochet hat.' },
+            { id: 69, category: 'Hats', name: 'Sindlloger Cat Beanies', price: 160, image: 'https://i.pinimg.com/736x/07/f0/76/07f0763512656181a8b98c26e6c9d0c5.jpg', desc: 'Y2K-style knitted crochet hat for women featuring striped patterns, cat ears, and star-shaped dangling tassels.' },
+            { id: 70, category: 'Hats', name: 'Spidey Beanie Collection (Set of 3)', price: 599, image: 'https://i.pinimg.com/1200x/d1/3b/b0/d13bb0c4dfe50cf44997294e3951ec6d.jpg', desc: 'Gwen, Parker, and Miles, webbed up friends.' },
+            { id: 71, category: 'Hats', name: 'Crochet Cap', price: 439, image: 'https://i.pinimg.com/736x/f2/e4/07/f2e4075b6ab146b6782b0496c2f2f090.jpg', desc: 'Baseball cap, but handmade crochet.' },
+            { id: 72, category: 'Hats', name: 'Slouchy beanie', price: 499, image: 'https://i.pinimg.com/1200x/5d/b4/49/5db449d15111d7f9ab672054a995b0ad.jpg', desc: 'Crocheted slouchy beanie featuring a star applique and a buckled strap design. .' },
+            { id: 73, category: 'Hats', name: 'Two-toned Beanie', price: 240, image: 'https://i.pinimg.com/1200x/84/eb/ab/84ebabd93db75e110e446f3145d75886.jpg', desc: 'handmade beanie is likely a crochet creation inspired by patterns like the "Beanie 2.0" or similar two-color designs.' },
+            { id: 74, category: 'Hats', name: 'Cowboy Crochet', price: 599, image: 'https://i.pinimg.com/736x/93/fe/0d/93fe0d646095168eeac3229fd2e35ce5.jpg', desc: 'handmade crochet cowboy hat featuring a warm, autumn-toned striped pattern and a braided band.' },
+            { id: 75, category: 'Hats', name: 'Baymax Beanie', price: 199, image: 'https://i.pinimg.com/736x/4a/9d/84/4a9d8487bb8eeb9734dcb62bb55f90ae.jpg', desc: 'Baymax will always be with you.' },
+            { id: 76, category: 'Hats', name: 'Breathable Beanie', price: 150, image: 'https://i.pinimg.com/736x/f2/cc/ac/f2ccace27425133cc0884b018663b4f0.jpg', desc: 'A summer beanie??' },
+            { id: 77, category: 'Hats', name: 'Mushroom Crochet', price: 399, image: 'https://i.pinimg.com/1200x/3e/04/c1/3e04c1fc89d1dfb78a5a9ee800cfbd8e.jpg', desc: 'Become the tree for this mushroom.' },
+            { id: 78, category: 'Hats', name: 'Bucket Hat Crochet', price: 299, image: 'https://i.pinimg.com/736x/1f/11/0c/1f110c6199b346260952228ebba65cc8.jpg', desc: '3 unique options to pick and choose from.' },
+            { id: 79, category: 'Hats', name: 'Ribbed Beanie', price: 250, image: 'https://i.pinimg.com/1200x/31/ed/b4/31edb4e42caa09c454bb8c403921547a.jpg', desc: 'Minimalist ribbed fit and are made from soft, high-quality vegan yarn for cozy warmth.' },
+            { id: 80, category: 'Hats', name: 'Crochet Sun Hat', price: 439, image: 'https://i.pinimg.com/736x/fd/a0/92/fda092773229f5eb6ff8af89c8aa12b5.jpg', desc: 'handmade crochet sun hat with a large bow detail, inspired by Tran Uyen initial design.' },
+            { id: 81, category: 'Hats', name: 'Bucket Hat', price: 439, image: 'https://i.pinimg.com/736x/fa/f3/74/faf3741d77d4f0ee781e28216653db4a.jpg', desc: ' Korean-style knitted bucket hat featuring a wave-edge brim and a small decorative patch.' },
+            { id: 82, category: 'Hats', name: 'Stripey Beanie', price: 279, image: 'https://i.pinimg.com/736x/92/0d/e0/920de02cc9a93e0b84e7c5d29e710cd5.jpg', desc: 'The hats are all beanie style with a ribbed texture, which helps provide a snug fit and added warmth.' },
+            { id: 83, category: 'Hats', name: 'Bear Beanie', price: 199, image: 'https://i.pinimg.com/736x/42/b8/ab/42b8ab5a64c689e93ffa8b24057b88db.jpg', desc: 'The simple beanie design with tiny rounded ears makes for a quick, adorable gift thats perfect for newborn photos.' },
+
+            // --- BABY CLOTHING (16) ---
+            { id: 84, category: 'Baby Clothing', name: 'Green Baby Crochet Set', price: 559, image: 'https://i.pinimg.com/1200x/fe/cd/05/fecd0527506f4cc4e2199bf44bad021a.jpg', desc: 'Full baby outfit, made from baby friendly yarn.' },
+            { id: 85, category: 'Baby Clothing', name: 'Baby Booties', price: 249, image: 'https://i.pinimg.com/736x/8d/5c/ea/8d5cea737cf39a7ed557949a51757101.jpg', desc: 'Tiny soft feet.' },
+            { id: 86, category: 'Baby Clothing', name: 'Baby Cow Outfit', price: 459, image: 'https://i.pinimg.com/736x/44/4d/ef/444def580dd943e1e964f7f5e5d98103.jpg', desc: 'Handmade crochet baby cow outfit features a hat with horns and a matching romper.' },
+            { id: 87, category: 'Baby Clothing', name: 'Crochet Baby Bibs', price: 149, image: 'https://i.pinimg.com/736x/a0/3a/3c/a03a3c1607ae2e5b204700be3563c7b3.jpg', desc: 'Designed in a charming animal-face theme with floral details. ' },
+            { id: 88, category: 'Baby Clothing', name: 'Hat & Booties Set', price: 349, image: 'https://i.pinimg.com/1200x/45/74/61/457461fde7a43064918dfb5c65f24e9c.jpg', desc: 'A0 labor of love crafted with care for a precious new arrival.' },
+            { id: 89, category: 'Baby Clothing', name: 'Hat & Booties & Gloves Set', price: 419, image: 'https://i.pinimg.com/736x/47/c7/a1/47c7a1af7167a151452afbc9115bad44.jpg', desc: 'Crafted with soft plush yarn, Bernat Baby Blanket yarn' },
+            { id: 90, category: 'Baby Clothing', name: 'Moon & Stars Pancho', price: 519, image: 'https://i.pinimg.com/736x/6d/63/b8/6d63b8537a57e1e5ce8c2a4d3b393d80.jpg', desc: 'This magical "Moon and Stars" poncho is designed to keep your little one cozy, stylish, and snug as a bug on all their adventures' },
+            { id: 91, category: 'Baby Clothing', name: 'Crochet Booties & Fluffy Buddy', price: 549, image: 'https://i.pinimg.com/736x/a1/ef/05/a1ef05b3bf9d1c24f3e8e3d0050226d3.jpg', desc: 'Handmade plush teddy bear and matching baby booties crochet set, crafted from soft chenille yarn.' },
+            { id: 92, category: 'Baby Clothing', name: 'Duckie Blanket', price: 299, image: 'https://i.pinimg.com/1200x/19/36/2b/19362b629a2a5c1ce1fc18f2be079e7f.jpg', desc: ' Blue crochet baby blanket featuring yellow duck appliques and a white border.' },
+            { id: 93, category: 'Baby Clothing', name: 'Bear Blanket', price: 349, image: 'https://i.pinimg.com/736x/a3/24/f0/a324f02257ad89e2ff6cf2a982fdfd17.jpg', desc: 'Wrap your little one in warmth and whimsy with this adorable, handmade crochet baby blanket featuring a charming little teddy bear accent.' },
+            { id: 94, category: 'Baby Clothing', name: 'Gingham Blanket', price: 399, image: 'https://i.pinimg.com/1200x/d4/8c/c1/d48cc16cbc2a1abcac066b56ba4675d8.jpg', desc: 'Handmade gingham-style baby blanket constructed from crocheted granny squares in shades of blue and white.' },
+            { id: 95, category: 'Baby Clothing', name: 'Winnie The Pooh Blanket', price: 349, image: 'https://i.pinimg.com/1200x/80/64/10/806410bb454955655e817b1f59463e33.jpg', desc: 'Wrap your little one in comfort and nostalgia with this adorable, handcrafted Winnie the Pooh crochet baby blanket, perfect for snuggles and sweet dreams.' },
+            { id: 96, category: 'Baby Clothing', name: 'Baby Blanket & Cute Beanie', price: 399, image: 'https://i.pinimg.com/1200x/ef/eb/59/efeb5903077f6ce7f3b7db16def16d6c.jpg', desc: 'Wrap your little one in comfort with this adorable, handmade crocheted baby blanket and matching bear hat set, crafted with love to become a cherished favorite.' },
+            { id: 97, category: 'Baby Clothing', name: 'Eeyore Blanket', price: 259, image: 'https://i.pinimg.com/736x/cb/37/56/cb37569d5824e1098bfd925d98eca098.jpg', desc: 'This handmade crochet blanket features a colorful portrait of Eeyore from Winnie the Pooh, created using graphgan color-work techniques.' },
+            { id: 98, category: 'Baby Clothing', name: 'Bear Blanket', price: 349, image: 'https://i.pinimg.com/736x/e2/3c/c0/e23cc06d3a668a593887ed47a121cccc.jpg', desc: '"Sleep Tight, Little Bear" crochet pattern, made with cotton yarn and featuring a teddy bear motif on granny squares.' },
+            { id: 99, category: 'Baby Clothing', name: 'Giraffe Blanket', price: 329, image: 'https://i.pinimg.com/1200x/63/d5/24/63d52408cec7fb40c84ea8af7afe604b.jpg', desc: 'Handcrafted crochet giraffe blanket, perfect for snuggles and nursery decor.' },
+
+            // --- BOUQUETS (3) ---
+            { id: 100, category: 'Bouquets', name: 'Hooked Tulip Bouqet', price: 699, image: 'https://i.pinimg.com/1200x/2c/39/61/2c39616b8a39ff0a1d8dc53c03348885.jpg', desc: 'This stunning, handcrafted crochet bouquet of lilies and roses offers everlasting beauty, a perfect and unique gift that will never wilt or fade.' },
+            { id: 101, category: 'Bouquets', name: 'Sunflower Fuzzy Wire Bouquet', price: 599, image: 'https://i.pinimg.com/736x/98/85/00/988500c007141e95f2c3bd3a64ac1df5.jpg', desc: 'Handmade crochet flower bouquet containing sunflowers and daisies.' },
+            { id: 102, category: 'Bouquets', name: 'Winter Frost Bouqet', price: 649, image: 'https://i.pinimg.com/736x/ce/4d/86/ce4d86fb71d86d0dcd681433792c5af4.jpg', desc: 'The arrangement includes blue and white flowers wrapped in rustic brown paper with a decorative bow.' }
+        ];
+
+        // --- MAIN APPLICATION COMPONENT ---
+        const App = () => {
+            const [page, setPage] = useState('home');
+            const [cart, setCart] = useState([]);
+            const [isCartOpen, setIsCartOpen] = useState(false);
+            const [selectedProduct, setSelectedProduct] = useState(null);
+            const [filter, setFilter] = useState('All');
+            const [payMethod, setPayMethod] = useState('cod');
+            const [reserveStudio, setReserveStudio] = useState(null);
+
+            useEffect(() => { lucide.createIcons(); window.scrollTo(0,0); }, [page, isCartOpen, selectedProduct, payMethod, reserveStudio]);
+
+            const addToCart = (p) => {
+                setCart([...cart, { ...p, cartId: Math.random() }]);
+                setIsCartOpen(true);
+            };
+
+            const totalPrice = cart.reduce((acc, curr) => acc + curr.price, 0);
+
+            return (
+                <div className="min-h-screen relative">
+                    {/* NAVBAR (Strictly Centered Logo) */}
+                    <nav className="fixed top-0 w-full z-50 bg-warm-fog/90 backdrop-blur-md border-b border-soldier/5 px-10 py-10">
+                        <div className="max-w-7xl mx-auto flex items-center relative">
+                            {/* Left Nav */}
+                            <div className="flex gap-10 text-[16px] tracking-[0.2em] font-bold uppercase">
+                                <button onClick={() => setPage('shop')} className="hover:text-blossom transition">Shop</button>
+                                <button onClick={() => setPage('courses')} className="hover:text-blossom transition">Workshops</button>
+                            </div>
+
+                            {/* Centered Logo */}
+                            <h1 onClick={() => setPage('home')} className="serif text-4xl tracking-[0.3em] font-bold cursor-pointer absolute left-1/2 -translate-x-1/2 whitespace-nowrap">MODERN WEAVES</h1>
+
+                            {/* Right Nav */}
+                            <div className="ml-auto flex gap-10 items-center text-[16px] tracking-[0.2em] font-bold uppercase">
+                                <button onClick={() => setPage('about')} className="hover:text-blossom transition">About</button>
+                                <button onClick={() => setIsCartOpen(true)} className="relative hover:scale-110 transition">
+                                    <i data-lucide="shopping-bag" className="w-7 h-7"></i>
+                                    {cart.length > 0 && (
+                                        <span className="absolute -top-2 -right-2 bg-blossom text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full border-2 border-warm-fog font-bold">{cart.length}</span>
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+                    </nav>
+
+                    {/* CART DRAWER */}
+                    {isCartOpen && (
+                        <div className="fixed inset-0 z-[100] flex justify-end">
+                            <div className="absolute inset-0 bg-soldier/20 backdrop-blur-sm" onClick={() => setIsCartOpen(false)} />
+                            <div className="relative w-full max-w-md bg-warm-fog h-full p-10 shadow-2xl flex flex-col drawer-slide">
+                                <div className="flex justify-between items-center mb-12">
+                                    <h2 className="serif text-4xl">Your Cart</h2>
+                                    <button onClick={() => setIsCartOpen(false)}><i data-lucide="x" className="w-8 h-8"></i></button>
+                                </div>
+                                <div className="flex-1 overflow-y-auto space-y-8 no-scrollbar pr-2">
+                                    {cart.length === 0 ? <p className="text-center italic opacity-40 py-20">Your bag is empty...</p> : 
+                                        cart.map(item => (
+                                            <div key={item.cartId} className="flex gap-5 bg-white/40 p-5 rounded-3xl border border-soldier/5 items-center">
+                                                <img src={item.image} className="w-20 h-24 object-cover rounded-2xl shadow-sm" />
+                                                <div className="flex-1">
+                                                    <h4 className="serif text-xl leading-tight">{item.name}</h4>
+                                                    <p className="text-sm font-bold text-blossom mt-1">{item.price} MAD</p>
+                                                </div>
+                                                <button onClick={() => setCart(cart.filter(c => c.cartId !== item.cartId))}><i data-lucide="trash-2" className="w-5 h-5 text-soldier/20 hover:text-blossom transition"></i></button>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                                {cart.length > 0 && (
+                                    <div className="pt-8 border-t border-soldier/10">
+                                        <div className="flex justify-between text-3xl serif mb-8"><span>Subtotal</span><span>{totalPrice} MAD</span></div>
+                                        <button onClick={() => {setPage('checkout'); setIsCartOpen(false)}} className="w-full bg-soldier text-warm-fog py-6 rounded-full font-bold tracking-widest shadow-xl uppercase text-[12px]">Proceed to Checkout</button>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* RESERVE MODAL */}
+                    {reserveStudio && (
+                        <div className="fixed inset-0 z-[110] flex items-center justify-center p-6">
+                            <div className="absolute inset-0 bg-soldier/60 backdrop-blur-md" onClick={() => setReserveStudio(null)} />
+                            <div className="relative bg-warm-fog w-full max-w-lg p-12 rounded-[4rem] shadow-2xl fade-up">
+                                <h3 className="serif text-4xl mb-2">Reserve a Spot</h3>
+                                <p className="text-blossom font-bold uppercase tracking-widest text-xs mb-8">Studio: {reserveStudio}</p>
+                                <div className="space-y-4">
+                                    <input type="text" placeholder="Full Name" className="w-full p-5 rounded-2xl bg-white outline-none border border-soldier/5" />
+                                    <input type="email" placeholder="Email Address" className="w-full p-5 rounded-2xl bg-white outline-none border border-soldier/5" />
+                                    <button onClick={() => {alert('Reservation sent! Marwa will get back to you soon.'); setReserveStudio(null)}} className="w-full bg-soldier text-warm-fog py-5 rounded-full font-bold mt-4 uppercase tracking-widest text-[11px]">Confirm Booking</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* WELCOME PAGE */}
+                    {page === 'home' && (
+                        <div className="fade-up">
+                            <section className="welcome-hero h-screen flex flex-col items-center justify-center text-center px-6">
+                                <div className="max-w-5xl">
+                                    <p className="uppercase tracking-[0.6em] text-[13px] font-bold opacity-60 mb-10">Founded By Marwa Fathi</p>
+                                    <h2 className="serif text-[7rem] md:text-[10rem] leading-none mb-12">Woven by <br/><span className="italic text-blossom font-light">Soul.</span></h2>
+                                    <button onClick={() => setPage('shop')} className="bg-soldier text-warm-fog px-16 py-6 rounded-full font-bold tracking-[0.3em] text-[11px] shadow-2xl hover:bg-meadow transition-all uppercase">Explore Collection</button>
+                                </div>
+                            </section>
+                        </div>
+                    )}
+
+                    {/* SHOP PAGE */}
+                    {page === 'shop' && (
+                        <div className="fade-up pt-52 px-10 pb-32">
+                            <div className="max-w-7xl mx-auto">
+                                <h2 className="serif text-8xl text-soldier mb-12">The Catalog</h2>
+                                <div className="flex flex-wrap gap-3 mb-20">
+                                    {['All', 'Toys', 'Accessories', 'Scarves', 'Cardigans', 'Sweaters', 'Dresses', 'Hats', 'Baby Clothing', 'Bouquets'].map(cat => (
+                                        <button key={cat} onClick={() => setFilter(cat)} className={`px-8 py-4 rounded-full border border-soldier/10 text-[11px] font-bold uppercase tracking-widest transition-all ${filter === cat ? 'bg-soldier text-warm-fog shadow-lg' : 'bg-white/40 hover:bg-berry-good'}`}>{cat}</button>
+                                    ))}
+                                </div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
+                                    {PRODUCTS.filter(p => filter === 'All' || p.category === filter).map(p => (
+                                        <div key={p.id} className="group cursor-pointer" onClick={() => {setSelectedProduct(p); setPage('detail')}}>
+                                            <div className="aspect-[3/4] rounded-[3.5rem] overflow-hidden bg-white mb-8 shadow-sm group-hover:shadow-2xl transition-all relative">
+                                                <img src={p.image} className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000" />
+                                                <div className="absolute inset-0 quick-view-overlay opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                    <span className="text-[10px] text-white uppercase font-bold tracking-widest bg-soldier/80 px-6 py-3 rounded-full">Quick View</span>
+                                                </div>
+                                            </div>
+                                            <h4 className="serif text-3xl mb-1 text-soldier">{p.name}</h4>
+                                            <div className="flex justify-between items-center opacity-60 font-bold text-[11px] uppercase tracking-widest">
+                                                <span>{p.category}</span>
+                                                <span className="text-blossom">{p.price} MAD</span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* DETAIL PAGE */}
+                    {page === 'detail' && selectedProduct && (
+                        <div className="fade-up pt-52 px-10 pb-32 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
+                            <div className="rounded-[5rem] overflow-hidden shadow-2xl border-[20px] border-white aspect-[4/5]">
+                                <img src={selectedProduct.image} className="w-full h-full object-cover" />
+                            </div>
+                            <div>
+                                <button onClick={() => setPage('shop')} className="mb-12 text-[12px] font-bold uppercase tracking-widest opacity-40 hover:opacity-100 transition flex items-center gap-2"><i data-lucide="arrow-left" className="w-4 h-4"></i> Back to shop</button>
+                                <h1 className="serif text-7xl mb-8 leading-tight">{selectedProduct.name}</h1>
+                                <p className="text-blossom text-5xl mb-12 font-light italic">{selectedProduct.price} MAD</p>
+                                <p className="text-2xl leading-relaxed opacity-70 mb-14 italic max-w-xl">"{selectedProduct.desc}"</p>
+                                <button onClick={() => addToCart(selectedProduct)} className="w-full bg-soldier text-warm-fog py-7 rounded-full font-bold shadow-2xl tracking-[0.2em] hover:bg-meadow transition-all uppercase text-[12px]">Add to Bag</button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* CHECKOUT PAGE */}
+                    {page === 'checkout' && (
+                        <div className="fade-up pt-52 px-10 pb-32 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-24">
+                            <div className="space-y-16">
+                                <h2 className="serif text-7xl">Checkout</h2>
+                                <div className="space-y-6">
+                                    <p className="text-[12px] font-bold uppercase tracking-widest opacity-40 uppercase">1. Delivery Address</p>
+                                    <input type="text" placeholder="Full Name" className="w-full p-6 rounded-3xl bg-white border-none shadow-sm" />
+                                    <input type="text" placeholder="Shipping Address" className="w-full p-6 rounded-3xl bg-white border-none shadow-sm" />
+                                    <input type="text" placeholder="Phone Number" className="w-full p-6 rounded-3xl bg-white border-none shadow-sm" />
+                                </div>
+                                <div className="space-y-10">
+                                    <p className="text-[12px] font-bold uppercase tracking-widest opacity-40 uppercase">2. Payment Method</p>
+                                    <div className="flex gap-4">
+                                        <button onClick={() => setPayMethod('cod')} className={`flex-1 py-6 rounded-3xl font-bold border-2 transition-all ${payMethod === 'cod' ? 'border-soldier bg-soldier text-warm-fog shadow-lg' : 'border-soldier/10 opacity-50 bg-white/40'}`}>Cash on Delivery</button>
+                                        <button onClick={() => setPayMethod('card')} className={`flex-1 py-6 rounded-3xl font-bold border-2 transition-all ${payMethod === 'card' ? 'border-soldier bg-soldier text-warm-fog shadow-lg' : 'border-soldier/10 opacity-50 bg-white/40'}`}>Online Payment</button>
+                                    </div>
+                                    {payMethod === 'card' && (
+                                        <div className="p-10 bg-white/60 rounded-[3rem] border border-white space-y-5 shadow-inner fade-up">
+                                            <input type="text" placeholder="Cardholder Name" className="w-full p-5 rounded-2xl bg-white/80" />
+                                            <input type="text" placeholder="Card Number (0000 0000 0000 0000)" className="w-full p-5 rounded-2xl bg-white/80" />
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <input type="text" placeholder="MM/YY" className="p-5 rounded-2xl bg-white/80" />
+                                                <input type="text" placeholder="CVV" className="p-5 rounded-2xl bg-white/80" />
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                            <div className="bg-white/40 p-16 rounded-[5rem] border border-white h-fit shadow-2xl sticky top-52">
+                                <h3 className="serif text-5xl mb-12">Summary</h3>
+                                <div className="space-y-5 mb-12 max-h-[350px] overflow-y-auto no-scrollbar pr-4 italic opacity-70">
+                                    {cart.map(i => <div key={i.cartId} className="flex justify-between text-lg"><span>{i.name}</span><span>{i.price} MAD</span></div>)}
+                                </div>
+                                <div className="border-t-2 border-soldier/10 pt-10 flex justify-between serif text-6xl">
+                                    <span>Total</span>
+                                    <span>{totalPrice} MAD</span>
+                                </div>
+                                <button onClick={() => alert('Order confirmed! We will contact you shortly.')} className="w-full bg-soldier text-warm-fog py-7 rounded-full font-bold mt-12 tracking-[0.3em] shadow-2xl uppercase text-[12px]">Complete Order</button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ABOUT PAGE */}
+                    {page === 'about' && (
+                        <div className="fade-up pt-52 px-10 pb-32 max-w-4xl mx-auto text-center">
+                            <p className="text-blossom font-bold tracking-[0.4em] uppercase text-xs mb-4">The Maker</p>
+                            <h2 className="serif text-7xl mb-12 italic">Marwa Fathi</h2>
+                            <div className="space-y-8 text-xl leading-relaxed italic opacity-80 mb-20">
+                                <p>"Crochet is slow by nature. It's meant to be. I started Modern Weaves because I missed seeing things that were actually made by a person, not a factory line."</p>
+                                <p>"I learned how to hold the hook from the women in my family in Casablanca. To me, every sweater or toy is a little piece of that memory. We use local Atlas wool, we sit together, we talk, and we weave."</p>
+                                <p>"Thanks for choosing something that takes time. It really means a lot."</p>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                {[{c:'Casablanca', a:'Maarif Studio'}, {c:'Rabat', a:'Agdal District'}, {c:'Ifrane', a:'Winter Boutique'}].map(s => (
+                                    <div key={s.c} className="p-10 bg-white/30 rounded-[3rem] border border-white">
+                                        <h4 className="serif text-3xl mb-2">{s.c}</h4>
+                                        <p className="text-[10px] font-bold uppercase opacity-40 tracking-widest">{s.a}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* COURSES PAGE */}
+                    {page === 'courses' && (
+                        <div className="fade-up pt-52 px-10 pb-32 max-w-5xl mx-auto">
+                            <h2 className="serif text-7xl text-center mb-10 leading-tight">Studio Workshops</h2>
+                            <p className="text-center opacity-60 text-lg mb-24 italic">Come sit with us. We host small, weekend sessions where we share the craft over tea.</p>
+                            <div className="space-y-12">
+                                {['Maarif Studio', 'Agdal Studio', 'Winter Boutique'].map(studio => (
+                                    <div key={studio} className="bg-white/40 p-16 rounded-[5rem] flex flex-col md:flex-row justify-between items-center group hover:bg-white transition-all shadow-sm">
+                                        <div className="text-center md:text-left">
+                                            <h3 className="serif text-5xl mb-3">{studio}</h3>
+                                            <p className="text-[12px] font-bold uppercase opacity-30 tracking-[0.2em]">Saturdays & Sundays • 10:00 AM - 1:00 PM</p>
+                                        </div>
+                                        <button onClick={() => setReserveStudio(studio)} className="bg-soldier text-warm-fog px-12 py-5 rounded-full font-bold text-[11px] tracking-widest shadow-xl uppercase">Reserve Spot</button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* FOOTER */}
+                    <footer className="py-32 bg-soldier text-warm-fog px-10 rounded-t-[7rem]">
+                        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-20">
+                            <div className="max-w-md">
+                                <h2 className="serif text-6xl mb-8 tracking-widest">MODERN WEAVES</h2>
+                                <p className="opacity-50 text-xl leading-relaxed italic">"Keep the loops slow and the tea hot." — Marwa Fathi</p>
+                            </div>
+                            <div className="flex gap-20 text-[12px] uppercase tracking-[0.2em] font-bold">
+                                <div className="space-y-6">
+                                    <p onClick={() => setPage('shop')} className="cursor-pointer hover:text-berry-good transition">Shop All</p>
+                                    <p onClick={() => setPage('courses')} className="cursor-pointer hover:text-berry-good transition">Workshops</p>
+                                    <p onClick={() => setPage('about')} className="cursor-pointer hover:text-berry-good transition">About Us</p>
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
